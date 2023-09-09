@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>first step is done you manage to get this page</h1>
+    <div>
+        <input type="text" id="name">
+        <button id="submit">submit</button>
+    </div>
+
+    <script>
+        const submit = document.getElementById('submit');
+        submit.onclick = async () => {
+            console.log('clicked')
+            const name = document.getElementById('name').value;
+            // const data = await fetch(`/createUser?name=${name}`);
+            window.location.href = `/createUser?name=${name}`;
+            // console.log('done');
+            // console.log(data);
+            // console.log(await data.json());
+        }
+    </script>
+</body>
+</html>
