@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat page</title>
+    <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
+    <style>
+        #chatArea {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat page</h1>
+    <div id="user">
+        <input type="text" id="userNameInput">
+        <button type="text" id="loginBtn">login btn</button>
+    </div>
+    <div id="chatArea">
+        <div>
+            <input type="text" id="inputMessageContent"/>
+            <button id="btnSendMessage">send message</button>
+        </div>
+        <div id="userBlock"></div>
+        <div>
+            <h1>messages</h1>
+            <ul id="messages"></ul>
+        </div>
+        <section>
+            <h1>logged in</h1>
+            <div id="users">
+                
+            </div>
+        </section>
+    </div>
+    <script>
+        function loginUser() {
+            const userInput = document.getElementById('userNameInput').value;
+            if (!userInput) return;
+            document.getElementById('chatArea').style.display = 'block';
+            document.getElementById('user').style.display = 'none';
+            document.getElementById('user').textContent = userInput;
+
+        }
+        function setUsers(users) {
+            const usersDiv = document.getElementById('users');
+            usersDiv.innerHTML = '';
+            for (key in users) {
+                usersDiv.innerHTML += `<div>${users[key]}</div>`;
+            }
+        }
+        function socketSetUp() {
+
+            const userName = document.getElementById('user').textContent;
+            const message = document.getElementById('inputMessageContent');
+    
+            if (window.location.protocol === 'https:') {
+                wsUri = 'wss://' + window.location.host;
+            } else {
+                wsUri = 'ws://' + window.location.host;
+            }
+            const socket = io(wsUri);
+            socket.emit('join', userName);
+            socket.on('message', (data) => {
+                console.log(data);
+                messages.innerHTML += `<li>${data}</li>`;
+            });
+    
+            socket.on('userLogout', (details) => {
+                // document.getElementById('justLoggedOut').textContent = details?.message.value;
+                setUsers(details?.users);
+            });
+            socket.on('join', (details) => {
+                // document.getElementById('justLoggedIn').textContent = details?.message;
+                setUsers(details?.users);    
+            });
+
+            btnSendMessage.onclick = () => {
+                const message = document.getElementById('inputMessageContent');
+                const li = document.createElement('li');
+                li.textContent = `→ you said ${message.value}`;
+                messages.appendChild(li);
+                socket.emit('message', message.value);
+            }
+        }    
+        const loginBtn = document.getElementById('loginBtn');
+        loginBtn.onclick = () => {
+            loginUser();
+            socketSetUp();
+        }
+    </script>
+</body>
+</html>

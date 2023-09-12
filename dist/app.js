@@ -2,6 +2,7 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const http_1 = __importDefault(require("http"));
@@ -22,6 +23,9 @@ app.get('/', (req, res) => {
 });
 app.get('/login', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, '../client', 'login.html'));
+});
+app.get('/example', (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, '../client/chat', 'example.html'));
 });
 app.get('/chat', (req, res) => {
     console.log('req.query', req.query);
@@ -46,4 +50,4 @@ io.on('connection', (socket) => {
         delete users[socket.id];
     });
 });
-server.listen(8080, () => console.log('listening on http://localhost:8080'));
+server.listen((_a = process.env.PORT) !== null && _a !== void 0 ? _a : 8080, () => console.log('listening on http://localhost:8080'));

@@ -26,6 +26,10 @@ app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, '../client', 'login.html'));
 });
 
+app.get('/example', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/chat', 'example.html'));
+});
+
 app.get('/chat', (req, res) => {
     console.log('req.query', req.query);
     res.render('index', { user: req.query });
